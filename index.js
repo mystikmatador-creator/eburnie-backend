@@ -1,45 +1,53 @@
-import express from "express";
-import cors from "cors";
+const express = require("express");
+const cors = require("cors");
 
 const app = express();
+
+// Middlewares
 app.use(cors());
 app.use(express.json());
 
-// -------- ROUTE TEST ----------
-app.get("/", (req, res) => {
-  res.json({ message: "Backend Eburnie actif 🚀" });
-});
-
+// Route test (obligatoire pour Railway)
 app.get("/ping", (req, res) => {
-  res.json({ pong: true });
+  res.json({ pong: true, status: "Backend Eburnie actif" });
 });
 
-// -------- ABONNEMENTS ----------
-const abonnements = {
-  standard: { prix: 0, description: "Page prestataire basique" },
-  pro: { prix: 3000, description: "Badge Pro, galerie jusqu'à 10 photos" },
-  premium: { prix: 5000, description: "Badge Premium, galerie photos + vidéos, messagerie directe" }
-};
-
-// Route pour récupérer les abonnements
-app.get("/abonnements", (req, res) => {
-  res.json(abonnements);
-});
-
-// Route pour créer un abonnement pour un prestataire
-app.post("/abonnement", (req, res) => {
-  const { prestataire, type } = req.body;
-  if(!prestataire || !type || !abonnements[type]){
-    return res.status(400).json({ erreur: "Données invalides" });
-  }
-  // Ici on ferait le paiement puis l'enregistrement
-  // Pour l'instant, on simule
+// Abonnement STANDARD
+app.post("/abonnement/standard", (req, res) => {
+  const data = req.body;
   res.json({
-    message: `Abonnement ${type} enregistré pour ${prestataire}`,
-    abonnement: abonnements[type]
+    success: true,
+    type: "STANDARD",
+    message: "Abonnement Standard reçu",
+    data
   });
 });
 
-// -------- PORT ----------
+// Abonnement PRO
+app.post("/abonnement/pro", (req, res) => {
+  const data = req.body;
+  res.json({
+    success: true,
+    type: "PRO",
+    message: "Abonnement Pro reçu",
+    data
+  });
+});
+
+// Abonnement PREMIUM
+app.post("/abonnement/premium", (req, res) => {
+  const data = req.body;
+  res.json({
+    success: true,
+    type: "PREMIUM",
+    message: "Abonnement Premium reçu",
+    data
+  });
+});
+
+// PORT Railway (OBLIGATOIRE)
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log("Serveur lancé sur le port", PORT));
+
+app.listen(PORT, () => {
+  console.log("Serveur Eburnie lancé sur le port", PORT);
+});
